@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <script type="text/javascript" src="angular.min.js"></script>
+    <script type="text/javascript">
+      var app = angular.module('myApp',[]);
+      app.controller('controladorFactura',function($scope) {
+        $scope.listaFacturas = [{"id": 1, "concepto" : "mac", "importe": 1000},{"id": 2, "concepto" : "iphone", "importe": 700}];
+        $scope.addFactura =function()
+        {
+            $scope.listaFacturas.push({"id": 3, "concepto" : "nexus", "importe": 300});
+        };
+        $scope.calcularIva=function(factura){
+          return factura.importe * 1.21;
+        };
+        $scope.removeFactura=function(factura) {
+          $scope.listaFacturas = $scope.listaFacturas.filter(function(f){
+            return f!==factura;
+          });
+        };
+      });
+
+    </script>
+  </head>
+  <body ng-controller="controladorFactura">
+    <table>
+      <tr ng-repeat="factura in listaFacturas">
+        <td>{{$index+1}}</td>
+        <td>{{factura.id}}</td>
+        <td>{{factura.concepto}}</td>
+        <td>{{factura.importe}}</td>
+        <td>{{calcularIva(factura)}}</td>
+        <td> <input type="button" ng-click="removeFactura(factura)" value="Borrar"/></td>
+      </tr>
+</table>
+<input type="button" ng-click="addFactura()" value="nuevo"/>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+
+</head>
+<body>
+
+<p></p>
+<input type="button" id="botonId" value="cambiarID"/>
+<p></p>.
+<input type="button" id="botonConcepto" value="cambiarConcepto"/>
+<p></p>
+<input type="button" id="botonImporte" value="cambiarImporte"/>
+
+<script src="jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  var factura = {"id":1, "concepto":"mac", "importe":1000};
+  $("p:eq(0)").text(factura.id);
+  $("p:eq(1)").text(factura.concepto);
+  $("p:eq(2)").text(factura.importe);
+  $("#botonId").click(function() {
+    factura.id = 2;
+    $("p:eq(0)").text(factura.id);
+  });
+  $("#botonConcepto").click(function() {
+    factura.concepto = "iphone";
+    $("p:eq(1)").text(factura.concepto);
+  });
+  $("#botonImporte").click(function() {
+    factura.importe = "700";
+    $("p:eq(2)").text(factura.importe);
+  });
+});
+</script>
+</body>
+</html>

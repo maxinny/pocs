@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
   <head>
-    <script type="text/javascript" src="angular.min.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
     <script type="text/javascript">
       var app = angular.module('myApp',[]);
-      app.controller('controladorFactura',function($scope) {
-        $scope.listaFacturas = [{"id": 1, "concepto" : "mac", "importe": 1000},{"id": 2, "concepto" : "iphone", "importe": 700}];
-        $scope.addFactura =function()
-        {
-            $scope.listaFacturas.push({"id": 3, "concepto" : "nexus", "importe": 300});
-        };
+      app.controller('controladorFactura',function($scope, $http, $window) {
+        $scope.listaFacturas;
+
+
+
+
         $scope.calcularIva=function(factura){
           return factura.importe * 1.21;
         };
-        $scope.removeFactura=function(factura) {
-          $scope.listaFacturas = $scope.listaFacturas.filter(function(f){
-            return f!==factura;
+
+        $scope.listar = function(){
+          $http.get("http://localhost:3001/facturas").then(function(response) {
+                $scope.listaFacturas = response.data;
+          }, function(response) {
+            $scope.content = "Ha ocurrido un error";
           });
         };
 
-        $scope.addFactura = function() {
-          $scope.listaFacturas.push($scope.nuevaFactura);
+        $scope.removeFactura=function(factura) {
+
+          if ($window.confirm("Va a eliminar la factura: "+factura.concepto)){
+            $http.delete("http://localhost:3001/facturas/id/"+factura.id).then(function(response){
+
+                $scope.listaFacturas = $scope.listaFacturas.filter(function (factura) {
+                  return response.data !== factura.id;
+                });
+                console.log("ok");
+            });
+          }
+
+
         };
+
+        $scope.addFactura = function() {
+          $http.post("http://localhost:3001/facturas", $scope.nuevaFactura).then(function (response) {
+              $scope.listaFacturas.push(response.data);
+              console.log("ok");
+          });
+        };
+
+        $scope.listaFacturas = $scope.listar();
       });
 
     </script>
@@ -42,6 +65,7 @@
       </p>
       <input type="button" ng-click="addFactura()" value="Nueva Factura" />
     </form>
+    <div><p>{{content}}</p></div>
     <table>
       <tr ng-repeat="factura in listaFacturas">
         <td>{{$index+1}}</td>
@@ -52,6 +76,5 @@
         <td> <input type="button" ng-click="removeFactura(factura)" value="Borrar"/></td>
       </tr>
 </table>
-<input type="button" ng-click="addFactura()" value="nuevo"/>
 </body>
 </html>
